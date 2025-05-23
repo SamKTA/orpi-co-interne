@@ -100,7 +100,40 @@ if selected == "📝 Nouvelle recommandation":
         st.success("Recommandation envoyée !")
 
 # Page Mes recommandations
-if selected == "📂 Mes recommandations":
+
+elif selected == "📂 Mes recommandations":
+    st.subheader("Mes recommandations")
+
+    # Récupérer les recommandations envoyées et reçues
+    recs_env = supabase.table("recommendations").select("*").eq("sender_id", st.session_state.user["id"]).order("created_at", desc=True).execute().data
+    recs_rec = supabase.table("recommendations").select("*").eq("receiver_id", st.session_state.user["id"]).order("created_at", desc=True).execute().data
+
+    tab_env, tab_rec = st.tabs(["📤 Recommandations envoyées", "📥 Recommandations reçues"])
+
+    def afficher_reco(r):
+        st.markdown(f"""
+        **👤 Client :** {r['client_name']}  
+        **📌 Projet :** {r['projet']}  
+        **🏠 Adresse :** {r['adresse']}  
+        **📅 Date :** {r['created_at'][:10]}  
+        **📊 Statut :** `{r['statut']}`
+        """)
+        st.markdown("---")
+
+    with tab_env:
+        if not recs_env:
+            st.info("Aucune recommandation envoyée.")
+        else:
+            for r in recs_env:
+                afficher_reco(r)
+
+    with tab_rec:
+        if not recs_rec:
+            st.info("Aucune recommandation reçue.")
+        else:
+            for r in recs_rec:
+                afficher_reco(r)
+
     recs_env = supabase.table("recommendations").select("*").eq("sender_id", st.session_state.user["id"]).order("created_at", desc=True).execute().data
     recs_rec = supabase.table("recommendations").select("*").eq("receiver_id", st.session_state.user["id"]).order("created_at", desc=True).execute().data
     tab1, tab2 = st.tabs(["📤 Envoyées", "📥 Reçues"])
