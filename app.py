@@ -20,18 +20,18 @@ if "user" not in st.session_state:
 # Connexion utilisateur
 if st.session_state.user is None:
     with st.form("login_form"):
-        name = st.text_input("Prénom")
+        email = st.text_input("Adresse e-mail")
         password = st.text_input("Mot de passe", type="password")
         submitted = st.form_submit_button("Se connecter")
 
     if submitted:
-        user = supabase.table("users").select("*").eq("first_name", name).eq("password", password).execute()
+        user = supabase.table("users").select("*").eq("email", email).eq("password", password).execute()
         if user.data:
             st.session_state.user = user.data[0]
-            st.success(f"Bienvenue {name} !")
+            st.success(f"Bienvenue {st.session_state.user['first_name']} !")
             st.experimental_rerun()
         else:
-            st.error("Utilisateur ou mot de passe incorrect.")
+            st.error("Adresse e-mail ou mot de passe incorrect.")
 
 # Formulaire de recommandation
 if st.session_state.user:
