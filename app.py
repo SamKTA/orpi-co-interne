@@ -114,20 +114,16 @@ elif selected == "📝 Nouvelle recommandation":
 
         # Email
         lien = f"https://{st.request.host}/?reco_id={reco_id}"
-        corps = f\"\"\"Nouvelle recommandation reçue de {st.session_state.user['first_name']} {st.session_state.user['last_name']}.
+        corps = f"""Nouvelle recommandation reçue de {st.session_state.user['first_name']} {st.session_state.user['last_name']}.
 
 Client : {client_name}
 Projet : {projet}
 
 Accéder à la reco : {lien}
-\"\"\"        
-Client: {client_name}
-Projet: {projet}
+"""
+envoyer_mail(selected_user["email"], "Nouvelle recommandation reçue", corps)
 
-Accéder à la reco : {lien}"
-        envoyer_mail(selected_user["email"], "Nouvelle recommandation reçue", corps)
-
-        st.success("Recommandation envoyée !")
+st.success("Recommandation envoyée !")
 
 # Mes recommandations
 elif selected == "📂 Mes recommandations":
