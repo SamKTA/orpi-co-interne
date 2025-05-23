@@ -114,7 +114,7 @@ elif selected == "📝 Nouvelle recommandation":
 
         
         # Email
-        lien = f"https://{st.request.host}/?reco_id={reco_id}"
+        lien = f"https://orpi-co-interne.streamlit.app/?reco_id={reco_id}"
         corps = f"""Nouvelle recommandation reçue de {st.session_state.user["first_name"]} {st.session_state.user["last_name"]}.
 
 Client : {client_name}
