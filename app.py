@@ -80,3 +80,35 @@ if st.session_state.user:
             "created_at": datetime.utcnow().isoformat()
         }).execute()
         st.success("Recommandation envoyée avec succès ✅")
+
+
+# Page Mes Recommandations
+st.subheader("📂 Mes recommandations")
+
+tab_envoyees, tab_recues = st.tabs(["Envoyées", "Reçues"])
+
+# Récupérer les recommandations
+recs_envoyees = supabase.table("recommendations").select("*").eq("sender_id", st.session_state.user["id"]).order("created_at", desc=True).execute().data
+recs_recues = supabase.table("recommendations").select("*").eq("receiver_id", st.session_state.user["id"]).order("created_at", desc=True).execute().data
+
+def afficher_reco(r):
+    st.write(f"**Client :** {r['client_name']}")
+    st.write(f"**Projet :** {r['projet']}")
+    st.write(f"**Adresse :** {r['adresse']}")
+    st.write(f"**Statut :** `{r['statut']}`")
+    st.write(f"_Envoyée le {r['created_at'][:10]}_")
+    st.markdown("---")
+
+with tab_envoyees:
+    if not recs_envoyees:
+        st.info("Aucune recommandation envoyée.")
+    else:
+        for r in recs_envoyees:
+            afficher_reco(r)
+
+with tab_recues:
+    if not recs_recues:
+        st.info("Aucune recommandation reçue.")
+    else:
+        for r in recs_recues:
+            afficher_reco(r)
