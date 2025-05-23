@@ -9,8 +9,6 @@ from email.message import EmailMessage
 
 st.set_page_config(page_title="ORPI Reco", layout="wide")
 
-#Version
-
 # Connexion Supabase
 url = st.secrets["supabase_url"]
 key = st.secrets["supabase_key"]
@@ -114,17 +112,20 @@ elif selected == "📝 Nouvelle recommandation":
             "created_at": datetime.utcnow().isoformat()
         }).execute()
 
+        
         # Email
         lien = f"https://{st.request.host}/?reco_id={reco_id}"
-        corps = f"Nouvelle recommandation reçue de {st.session_state.user['first_name']} {st.session_state.user['last_name']}.
+        corps = f"""Nouvelle recommandation reçue de {st.session_state.user["first_name"]} {st.session_state.user["last_name"]}.
 
-Client: {client_name}
-Projet: {projet}
+Client : {client_name}
+Projet : {projet}
 
-Accéder à la reco : {lien}"
+Accéder à la reco : {lien}
+"""
         envoyer_mail(selected_user["email"], "Nouvelle recommandation reçue", corps)
 
         st.success("Recommandation envoyée !")
+
 
 # Mes recommandations
 elif selected == "📂 Mes recommandations":
