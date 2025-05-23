@@ -29,7 +29,7 @@ if st.session_state.user is None:
         if user.data:
             st.session_state.user = user.data[0]
             st.success(f"Bienvenue {st.session_state.user['first_name']} !")
-            st.experimental_rerun()
+            st.stop()
         else:
             st.error("Adresse e-mail ou mot de passe incorrect.")
 
