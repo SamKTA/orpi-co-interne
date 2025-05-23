@@ -80,13 +80,13 @@ if selected == "🏠 Accueil":
     col4.metric("💶 CA généré (€)", f"{ca_instant:,.0f}".replace(",", " "))
     col5.metric("📈 CA annuel projeté (€)", f"{ca_annuel:,.0f}".replace(",", " "))
 
+# Nouvelle recommandation
 elif selected == "📝 Nouvelle recommandation":
     users = supabase.table("users").select("*").neq("id", st.session_state.user["id"]).execute().data
     users_by_point = {}
     for u in users:
         key = u["point_de_vente"] or "Autres"
         users_by_point.setdefault(key, []).append(u)
-
     point = st.selectbox("Point de vente", list(users_by_point.keys()))
     selected_user = st.selectbox("Destinataire", users_by_point[point], format_func=lambda x: f"{x['first_name']} {x['last_name']} ({x['poste']})")
     client_name = st.text_input("Nom du client")
@@ -114,13 +114,12 @@ elif selected == "📝 Nouvelle recommandation":
 
         # Email
         lien = f"https://{st.request.host}/?reco_id={reco_id}"
-        corps = f"""Nouvelle recommandation reçue de {st.session_state.user['first_name']} {st.session_state.user['last_name']}.
+        corps = f"Nouvelle recommandation reçue de {st.session_state.user['first_name']} {st.session_state.user['last_name']}.
 
-Client : {client_name}
-Projet : {projet}
+Client: {client_name}
+Projet: {projet}
 
-Accéder à la reco : {lien}
-"""
+Accéder à la reco : {lien}"
         envoyer_mail(selected_user["email"], "Nouvelle recommandation reçue", corps)
 
         st.success("Recommandation envoyée !")
