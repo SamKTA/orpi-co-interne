@@ -9,6 +9,8 @@ from email.message import EmailMessage
 
 st.set_page_config(page_title="ORPI Reco", layout="wide")
 
+#Version
+
 # Connexion Supabase
 url = st.secrets["supabase_url"]
 key = st.secrets["supabase_key"]
