@@ -112,9 +112,9 @@ elif selected == "📝 Nouvelle recommandation":
             "created_at": datetime.utcnow().isoformat()
         }).execute()
 
-        # Email
-        lien = f"https://{st.request.host}/?reco_id={reco_id}"
-        corps = f"""Nouvelle recommandation reçue de {st.session_state.user['first_name']} {st.session_state.user['last_name']}.
+# Email
+lien = f"https://{st.request.host}/?reco_id={reco_id}"
+corps = f"""Nouvelle recommandation reçue de {st.session_state.user['first_name']} {st.session_state.user['last_name']}.
 
 Client : {client_name}
 Projet : {projet}
