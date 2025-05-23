@@ -82,33 +82,27 @@ if st.session_state.user:
         st.success("Recommandation envoyée avec succès ✅")
 
 
-# Page Mes Recommandations
-st.subheader("📂 Mes recommandations")
+# Tableau de bord d'accueil
+st.subheader("🏠 Tableau de bord")
 
-tab_envoyees, tab_recues = st.tabs(["Envoyées", "Reçues"])
+# Recommandations liées à l'utilisateur
+sent = supabase.table("recommendations").select("*").eq("sender_id", st.session_state.user["id"]).execute().data
+received = supabase.table("recommendations").select("*").eq("receiver_id", st.session_state.user["id"]).execute().data
 
-# Récupérer les recommandations
-recs_envoyees = supabase.table("recommendations").select("*").eq("sender_id", st.session_state.user["id"]).order("created_at", desc=True).execute().data
-recs_recues = supabase.table("recommendations").select("*").eq("receiver_id", st.session_state.user["id"]).order("created_at", desc=True).execute().data
+# Recommandations transformées
+transformed_status = ["Transformé", "Acté/Facturé", "Recruté"]
+transformed = [r for r in received if r["statut"] in transformed_status]
 
-def afficher_reco(r):
-    st.write(f"**Client :** {r['client_name']}")
-    st.write(f"**Projet :** {r['projet']}")
-    st.write(f"**Adresse :** {r['adresse']}")
-    st.write(f"**Statut :** `{r['statut']}`")
-    st.write(f"_Envoyée le {r['created_at'][:10]}_")
-    st.markdown("---")
+# Chiffre d'affaires total
+ca_instant = sum([r["chiffre_affaire_instant"] or 0 for r in transformed])
+ca_annuel = sum([r["chiffre_affaire_annuel"] or 0 for r in transformed])
 
-with tab_envoyees:
-    if not recs_envoyees:
-        st.info("Aucune recommandation envoyée.")
-    else:
-        for r in recs_envoyees:
-            afficher_reco(r)
+col1, col2, col3 = st.columns(3)
+col1.metric("📤 Envoyées", len(sent))
+col2.metric("📥 Reçues", len(received))
+col3.metric("✅ Transformées", len(transformed))
 
-with tab_recues:
-    if not recs_recues:
-        st.info("Aucune recommandation reçue.")
-    else:
-        for r in recs_recues:
-            afficher_reco(r)
+st.markdown("---")
+col4, col5 = st.columns(2)
+col4.metric("💶 CA généré (€)", f"{ca_instant:,.0f}".replace(",", " "))
+col5.metric("📈 CA annuel projeté (€)", f"{ca_annuel:,.0f}".replace(",", " "))
